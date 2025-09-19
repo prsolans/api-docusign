@@ -29,7 +29,9 @@ This is an **initial working implementation** that successfully:
 
 ### CLM (SpringCM) API
 - ✅ **Get single document by ID** (`getDocumentById`) - tested and working
-- 🚧 **Document search** - implemented but uses complex search task workflow
+- ✅ **Enhanced document retrieval** (`getDocumentByIdEnhanced`) - with metadata, versions, permissions
+- ✅ **Document search** (`searchDocumentsEnhanced`) - advanced filtering with search tasks
+- ✅ **Workflow triggers** (`triggerWorkflow`) - trigger existing CLM workflows with XML parameters
 - ❌ **List all documents** - CLM doesn't support this, only search-based retrieval
 
 ## Required Scopes
@@ -183,7 +185,7 @@ const allAgreements = await navigator.getAllAgreements();
 ```typescript
 const clm = new CLMService(auth);
 
-// Get documents with options
+// Get documents with basic search
 const documents = await clm.getDocuments({
   limit: 50,
   offset: 0,
@@ -193,17 +195,45 @@ const documents = await clm.getDocuments({
   sortOrder: 'desc'
 });
 
-// Get specific document
+// Enhanced document search with advanced filtering
+const enhancedResults = await clm.searchDocumentsEnhanced({
+  limit: 20,
+  AnyWords: 'contract agreement',
+  DocumentTypes: ['application/pdf', 'application/msword'],
+  CreatedAfter: '2024-01-01',
+  SearchContent: true,
+  IncludeSubFolders: true
+});
+
+// Get specific document (basic)
 const document = await clm.getDocumentById('document-id');
 
-// Get documents by folder
-const folderDocs = await clm.getDocumentsByFolder('folder-id');
+// Get enhanced document with metadata
+const enhancedDoc = await clm.getDocumentByIdEnhanced('document-id', {
+  expand: ['AttributeGroups', 'Versions', 'Permissions']
+});
 
-// Search documents
-const searchResults = await clm.searchDocuments('contract');
+// Get document versions, attributes, and permissions separately
+const versions = await clm.getDocumentVersions('document-id');
+const attributes = await clm.getDocumentAttributes('document-id');
+const permissions = await clm.getDocumentPermissions('document-id');
 
-// Get all documents (handles pagination automatically)
-const allDocuments = await clm.getAllDocuments();
+// Trigger CLM workflows
+const workflowResult = await clm.triggerWorkflow({
+  Name: 'Sample Workflow',
+  Params: clm.buildWorkflowXmlParams({
+    documentId: 'doc-123',
+    priority: 'high',
+    assignedTo: 'user@company.com'
+  })
+});
+
+// Trigger workflow for specific document
+const docWorkflowResult = await clm.triggerWorkflowForDocument(
+  'Document Approval Workflow',
+  'document-id',
+  { priority: 'high', department: 'legal' }
+);
 
 // Get folders
 const folders = await clm.getFolders();
@@ -226,6 +256,31 @@ npm run test:watch
 # Run with coverage
 npm run test:coverage
 ```
+
+### Live API Testing
+
+Test with real DocuSign APIs:
+
+```bash
+# Interactive authentication and basic testing
+npm run test:interactive
+
+# Test Navigator API (enhanced with filtering, AI summaries, etc.)
+npm run test:navigator
+
+# Test CLM workflow triggers (update workflow names in the test file)
+npm run test:clm-workflow
+
+# Debug CLM API endpoints step by step
+npm run debug:clm
+
+# Debug Navigator API endpoints
+npm run debug:navigator
+```
+
+**Note**: Before running live tests:
+1. Set up your `.env` file with valid DocuSign credentials
+2. For CLM workflow tests, update the workflow names in `examples/test-clm-workflow-trigger.ts` to match workflows that exist in your CLM system
 
 ### Integration Testing
 

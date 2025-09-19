@@ -18,7 +18,11 @@
     "test:quick": "ts-node examples/quick-api-test.ts",
     "debug:navigator": "ts-node examples/debug-navigator.ts",
     "debug:clm": "ts-node examples/debug-clm.ts",
-    "test:single-doc": "ts-node examples/test-single-document.ts"
+    "test:single-doc": "ts-node examples/test-single-document.ts",
+    "test:navigator": "ts-node examples/test-navigator-calls.ts",
+    "test:clm-workflow": "ts-node examples/test-clm-workflow-trigger.ts",
+    "test:clm-search": "ts-node examples/test-clm-enhanced-search.ts",
+    "test:clm-document": "ts-node examples/test-clm-single-document.ts"
   },
   "keywords": ["docusign", "clm", "navigator", "api", "oauth"],
   "author": "",

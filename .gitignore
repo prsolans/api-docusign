@@ -86,6 +86,10 @@ docusign_tokens.json
 *.p12
 *.pem
 
+# Token storage files
+.tokens.json
+tokens.json
+
 # Test artifacts
 test-results/
 screenshots/
