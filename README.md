@@ -2,31 +2,35 @@
 
 A unified TypeScript/Node.js service for accessing both DocuSign Navigator and CLM (SpringCM) APIs with shared authentication.
 
+## ⚠️ Current Status
+
+This is an **initial working implementation** that successfully:
+- ✅ Handles OAuth2 authentication with PKCE for both APIs
+- ✅ Retrieves Navigator agreement lists
+- ✅ Retrieves individual CLM documents by ID
+
+**What's working:** Basic API connectivity and authentication
+**What needs work:** Full API coverage, comprehensive error handling, production readiness
+
 ## Features
 
-- **Unified Authentication**: Single OAuth2 flow for both Navigator and CLM APIs
-- **Type Safety**: Full TypeScript support with comprehensive type definitions
-- **Automatic Token Management**: Built-in token refresh and expiration handling
-- **Error Handling**: Robust error handling with retry logic
-- **Testing**: Comprehensive test suite included
-- **Easy Integration**: Clean service interfaces ready for future applications
+- **Unified Authentication**: Single OAuth2 flow with PKCE support
+- **Type Safety**: TypeScript interfaces for API responses
+- **Token Management**: Automatic token refresh
+- **Basic Error Handling**: Retry logic and error reporting
+- **Testing Examples**: Interactive test tools included
 
-## Supported APIs
+## Currently Implemented APIs
 
 ### Navigator API
-- ✅ Get agreement list (`getAgreementList`)
-- ✅ Get agreement by ID
-- ✅ Search agreements
-- ✅ Filter agreements by status
-- ✅ Automatic pagination handling
+- ✅ **Get agreement list** (`getAgreementList`) - with filtering and pagination
+- ✅ **Get agreement by ID** (`getAgreementById`)
+- 🚧 Search and other methods exist but may need testing
 
 ### CLM (SpringCM) API
-- ✅ Get documents (`getDocuments`)
-- ✅ Get document by ID
-- ✅ Search documents
-- ✅ Get documents by folder
-- ✅ Download documents
-- ✅ Get folders and folder hierarchy
+- ✅ **Get single document by ID** (`getDocumentById`) - tested and working
+- 🚧 **Document search** - implemented but uses complex search task workflow
+- ❌ **List all documents** - CLM doesn't support this, only search-based retrieval
 
 ## Required Scopes
 
@@ -68,15 +72,24 @@ cp .env.example .env
 Edit `.env` with your DocuSign application credentials:
 
 ```env
-DOCUSIGN_CLIENT_ID=your_client_id_here
-DOCUSIGN_CLIENT_SECRET=your_client_secret_here
+# Get these from your DocuSign Developer Account
+DOCUSIGN_CLIENT_ID=your_integration_key_here
+DOCUSIGN_CLIENT_SECRET=your_secret_key_here
 DOCUSIGN_REDIRECT_URI=http://localhost:3000/auth/callback
 DOCUSIGN_ENVIRONMENT=sandbox
+DOCUSIGN_ACCOUNT_ID=your_account_id_here
 
-DOCUSIGN_NAVIGATOR_BASE_URL=https://demo.docusign.net/restapi
-DOCUSIGN_CLM_BASE_URL=https://demo.springcm.com
+# API URLs (sandbox - change for production)
+DOCUSIGN_NAVIGATOR_BASE_URL=https://api-d.docusign.com
+DOCUSIGN_CLM_BASE_URL=https://apiuatna11.springcm.com/v2/your_account_id_here
 DOCUSIGN_AUTH_BASE_URL=https://account-d.docusign.com
 ```
+
+**Important Notes:**
+- Replace `your_integration_key_here` with your DocuSign Integration Key
+- Replace `your_secret_key_here` with your DocuSign Secret Key
+- Replace `your_account_id_here` with your actual DocuSign Account ID (appears twice)
+- For production, change URLs to production endpoints
 
 ### 3. Basic Usage
 
